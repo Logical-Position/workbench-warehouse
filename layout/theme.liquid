@@ -12,7 +12,25 @@
   {{ 'application.js' | asset_url | script_tag }}
 </head>
 <body>
+  {%- if template.name == 'index' -%}
+    <h1 itemscope itemtype="http://schema.org/Organization">
+  {%- else -%}
+    <div itemscope itemtype="http://schema.org/Organization">
+  {%- endif -%}
+  
+    <a href="/" itemprop="url">
+      <img src="{{ "logo.svg" | asset_url }}"
+        alt="{{ shop.name }}"
+        itemprop="logo">
+    </a>
+  
+  {%- if template.name == 'index' -%}
+    </h1>
+  {%- else -%}
+    </div>
+  {%- endif -%}
 
+  
   {% for link in linklists.main-menu.links %}
     {% assign child_list_handle = link.title | handleize %}
     {% if linklists[child_list_handle].links != blank %}
