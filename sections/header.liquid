@@ -1,1 +1,91 @@
-<h1>HEADER GOES HERE</h1>>
+<header>
+  <div class="nav-bar">
+    <a href="{{ routes.root_url }}">
+      <img src="{{ section.settings.nav-image | img_url }}"/>
+    </a>
+
+    <div class="nav-t1-link-container">
+      {% for t1_link in section.settings.menu.links %}
+        {% if t1_link.links != blank %}
+          <div x-data="dropdown">
+            <a class="nav-t1-link" href="{{ t1_link.url }}" @mouseover="toggle "@mouseleave="toggle">{{ t1_link.title }}</a> {% comment %}T1 Links w/ dropdown{% endcomment %}
+  
+            <div class="nav-dropdown" x-cloak x-show="open" @mouseleave="toggle">
+              <div class="nav-t2-link-container">
+                {% for t2_link in t1_link.links %}
+                  <div class="nav-t3-link-container">
+                    <a class="nav-t2-link" href="{{ t2_link.url }}">{{ t2_link.title }}</a> {% comment %}T2 Links w/ dropdown{% endcomment %}
+  
+                    {% for t3_link in t2_link.links %}
+                      <a class="nav-t3-link" href="{{ t3_link.url }}">{{ t3_link.title }}</a> {% comment %}T3 Links w/o dropdown{% endcomment %}
+                    {% endfor %}
+                  </div>
+                {% endfor %}
+
+                <div class="nav-featured-links">
+                  <div class="nav-featured-links-grid">
+                    <div class="nav-featured-link">1</div>
+                    <div class="nav-featured-link">2</div>
+                    <div class="nav-featured-link">3</div>
+                    <div class="nav-featured-link">4</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        {% else %}
+          <a class="nav-t1-link" href="{{ t1_link.url }}" @mouseover="toggle">{{ t1_link.title }}</a> {% comment %}T1 Links w/o dropdown{% endcomment %}
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if shop.customer_accounts_enabled %}
+      <div class="nav-account-section">
+        {% render 'icon-magnifying-glass' %}
+        {% render 'icon-shopping-cart' %}
+        {% render 'icon-heart' %}
+
+        {% if customer %}
+        <a href="{{ routes.account_url }}" class="customer-link">Account</a>
+        {{ 'Log Out' | customer_logout_link | replace: '<a', '<a class="customer-link"' }}
+        {% else %}
+        {{ 'Log In' | customer_login_link | replace: '<a', '<a class="customer-link"' }}
+        {{ 'Register' | customer_register_link | replace: '<a', '<a class="customer-link"' }}
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</header>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+      Alpine.data('dropdown', () => ({
+          open: false,
+
+          toggle() {
+            this.open = !this.open;
+          }
+      }))
+  })
+</script>
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "nav-image",
+        "label": "Navigation Image"
+      },
+      {
+        "type": "link_list",
+        "id": "menu",
+        "default": "main-menu",
+        "label": "Navigation Menu"
+      }
+    ]
+  }
+{% endschema %}
