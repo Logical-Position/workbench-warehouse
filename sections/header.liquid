@@ -1,23 +1,25 @@
-<header>
+<header x-data="mobilemenu">
   <div class="nav-bar">
+    <!-- Logo -->
     <a href="{{ routes.root_url }}">
-      <img src="{{ section.settings.nav-image | img_url }}"/>
+      <img class="logo" src="{{ section.settings.nav-image | img_url: 'x30' }}"/>
     </a>
 
+    <!-- Desktop Nav -->
     <div class="nav-t1-link-container">
       {% for t1_link in section.settings.menu.links %}
         {% if t1_link.links != blank %}
           <div x-data="dropdown">
-            <a class="nav-t1-link" href="{{ t1_link.url }}" @mouseover="toggle "@mouseleave="toggle">{{ t1_link.title }}</a> {% comment %}T1 Links w/ dropdown{% endcomment %}
+            <a class="nav-t1-link" href="{{ t1_link.url }}" @mouseover="toggle" @mouseleave="toggle">{{ t1_link.title }}</a> <!-- Top level links w/ dropdown -->
   
-            <div class="nav-dropdown" x-cloak x-show="open" @mouseleave="toggle">
+            <div class="nav-dropdown" x-show="dropdownOpen" @mouseleave="toggle">
               <div class="nav-t2-link-container">
                 {% for t2_link in t1_link.links %}
                   <div class="nav-t3-link-container">
-                    <a class="nav-t2-link" href="{{ t2_link.url }}">{{ t2_link.title }}</a> {% comment %}T2 Links w/ dropdown{% endcomment %}
+                    <a class="nav-t2-link" href="{{ t2_link.url }}">{{ t2_link.title }}</a> <!-- 2nd level links w/ dropdown -->
   
                     {% for t3_link in t2_link.links %}
-                      <a class="nav-t3-link" href="{{ t3_link.url }}">{{ t3_link.title }}</a> {% comment %}T3 Links w/o dropdown{% endcomment %}
+                      <a class="nav-t3-link" href="{{ t3_link.url }}">{{ t3_link.title }}</a> <!-- 3rd level links w/o dropdown -->
                     {% endfor %}
                   </div>
                 {% endfor %}
@@ -36,11 +38,12 @@
           </div>
 
         {% else %}
-          <a class="nav-t1-link" href="{{ t1_link.url }}" @mouseover="toggle">{{ t1_link.title }}</a> {% comment %}T1 Links w/o dropdown{% endcomment %}
+          <a class="nav-t1-link" href="{{ t1_link.url }}" @mouseover="toggle">{{ t1_link.title }}</a> <!-- Top level Links w/o dropdown -->
         {% endif %}
       {% endfor %}
     </div>
 
+    <!-- Customer Links -->
     {% if shop.customer_accounts_enabled %}
       <div class="nav-account-section">
         {% render 'icon-magnifying-glass' %}
@@ -56,17 +59,29 @@
         {% endif %}
       </div>
     {% endif %}
+
+    <!-- Mobile Nav Button -->
+    <button type="button" @click="mobileMenuOpen = !mobileMenuOpen" class="mobile-menu-button">
+      {% render 'icon-bars-3' %}
+    </button>
   </div>
 </header>
+
+<div :hidden="!mobileMenuOpen" class="mobile-menu"></div>
 
 <script>
   document.addEventListener('alpine:init', () => {
       Alpine.data('dropdown', () => ({
-          open: false,
+          dropdownOpen: false,
 
           toggle() {
-            this.open = !this.open;
+            this.dropdownOpen = !this.dropdownOpen;
           }
+      }))
+
+      Alpine.data('mobilemenu', () => ({
+          mobileMenuOpen: false,
+
       }))
   })
 </script>
