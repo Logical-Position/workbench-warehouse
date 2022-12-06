@@ -1,0 +1,69 @@
+{% comment %}
+// Put your styles in this file.
+// Note: "@import" rules aren’t supported.
+{% endcomment %}
+
+{%- liquid
+    assign body_font_bold = settings.body_font | font_modify: 'weight', 'bold'
+    assign body_font_italic = settings.body_font | font_modify: 'style', 'italic'
+    assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+-%}
+
+{{ settings.body_font | font_face: font_display: 'swap' }}
+{{ body_font_bold | font_face: font_display: 'swap' }}
+{{ body_font_italic | font_face: font_display: 'swap' }}
+{{ body_font_bold_italic | font_face: font_display: 'swap' }}
+{{ settings.header_font | font_face: font_display: 'swap' }}
+
+:root {
+    --font-body-family: {{ settings.body_font.family }}, {{ settings.body_font.fallback_families }};
+    --font-body-style: {{ settings.body_font.style }};
+    --font-body-weight: {{ settings.body_font.weight }};
+    --font-body-weight-bold: {{ settings.body_font.weight | plus: 300 | at_most: 1000 }};
+
+    --font-heading-family: {{ settings.heading_font.family }}, {{ settings.heading_font.fallback_families }};
+    --font-heading-style: {{ settings.heading_font.style }};
+    --font-heading-weight: {{ settings.heading_font.weight }};
+
+    --colors-primary-text: {{ settings.colors_primary_text.red }}, {{ settings.colors_primary_text.green }}, {{ settings.colors_primary_text.blue }};
+    --colors-accent-1: {{ settings.colors_accent_1.red }}, {{ settings.colors_accent_1.green }}, {{ settings.colors_accent_1.blue }};
+    --colors-accent-2: {{ settings.colors_accent_2.red }}, {{ settings.colors_accent_2.green }}, {{ settings.colors_accent_2.blue }};
+    
+    --colors-secondary-text: {{ settings.colors_secondary_text.red }}, {{ settings.colors_secondary_text.green }}, {{ settings.colors_secondary_text.blue }};
+    --colors-outline-button: {{ settings.colors_outline_button.red }}, {{ settings.colors_outline_button.green }}, {{ settings.colors_outline_button.blue }};
+    --colors-background-1: {{ settings.colors_background_1.red }}, {{ settings.colors_background_1.green }}, {{ settings.colors_background_1.blue }};
+    --colors-background-2: {{ settings.colors_background_2.red }}, {{ settings.colors_background_2.green }}, {{ settings.colors_background_2.blue }};
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body-family);
+    font-style: var(--font-body-style);
+    font-weight: var(--font-body-weight);
+}
+
+ul, li { list-style: none; }
+
+button {
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a {
+    text-decoration: none;
+}

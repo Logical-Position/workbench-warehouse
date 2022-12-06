@@ -1,0 +1,9 @@
+<div x-data="{ open: false }">
+    <a class="mobile-link" href="{{ parent_url }}">{{ parent_title }}</a>
+    <button @click="open = !open" class="mobile-dropdown-button">{% render 'icon-chevron-down' %}</button>
+    <ul x-show="open">
+        {% for link in sublinks %}
+            <li><a href="{{ link.url }}" class="mobile-link">{{ link.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>

@@ -1,0 +1,42 @@
+<style>
+    .two-level-dropdown-container {
+        display: inline-block;
+    }
+
+    .two-level-dropdown {
+        position: absolute;
+        z-index: 10;
+        background-color: white;
+        min-width: 150px;
+        -webkit-box-shadow: 0px 5px 8px 1px rgba(0,0,0,0.2); 
+        box-shadow: 0px 5px 8px 1px rgba(0,0,0,0.2);
+    }
+
+    .two-level-dropdown-content {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+    }
+
+    .two-level-dropdown-content > a {
+        display: block;
+        margin: 8px 0;
+        text-decoration: none;
+    }
+
+    .two-level-dropdown-content > a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div x-data="{ open: false }" class="two-level-dropdown-container" @mouseover="open = true">
+    <a class="top-level-link" href="{{ parent_url }}">{{ parent_title }}{% render 'icon-chevron-down' %}</a>
+
+    <div class="two-level-dropdown" x-show="open" @mouseover.away="open = false">
+        <div class="two-level-dropdown-content">
+            {% for link in parent_children %}
+                <a href="{{ link.url }}">{{ link.title }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
