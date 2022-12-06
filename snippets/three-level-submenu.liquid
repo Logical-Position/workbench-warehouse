@@ -1,0 +1,52 @@
+<style>
+    .three-level-dropdown-container {
+        display: inline-block;
+    }
+
+    .three-level-dropdown {
+        position: absolute;
+        z-index: 10;
+        background-color: white;
+        width: 100%;
+        left: 0;
+        /* top: 46px; */
+        padding: 20px 40px;
+        -webkit-box-shadow: 0px 5px 8px 1px rgba(0,0,0,0.2); 
+        box-shadow: 0px 5px 8px 1px rgba(0,0,0,0.2);
+    }
+
+    .three-level-dropdown-content {
+        display: flex;
+    }
+
+    .three-level-dropdown-content li {
+        margin: 12px 0;
+    }
+
+    .three-level-dropdown-content a {
+        text-decoration: none;
+    }
+
+    .three-level-dropdown-content a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+
+<div x-data="{ open: false }" @mouseover="open = true" class="three-level-dropdown-container">
+    <a class="top-level-link" href="{{ parent_url }}">{{ parent_title }}{% render 'icon-chevron-down' %}</a>
+
+    <div class="three-level-dropdown" x-show="open" @mouseover.away="open = false">
+        <div class="three-level-dropdown-content">
+            {% for link in parent_children %}
+                <ul>
+                    <h4><a href="{{ link.url }}">{{ link.title }}</a></h4>
+                    {% for child_link in link.links %}
+                        <li><a href="{{ child_link.url }}">{{ child_link.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </div>
+        <!-- IMAGE CAROUSEL GOES HERE -->
+    </div>
+</div>

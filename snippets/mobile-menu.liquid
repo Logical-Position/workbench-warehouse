@@ -1,0 +1,104 @@
+<style>
+    .mobile-menu {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: white;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mobile-menu-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px;
+        border-bottom: 1px solid black;
+    }
+
+    #customer-account-buttons {
+        justify-content: space-around;
+    }
+
+    .mobile-menu-navigation {
+        height: 60%;
+        background-color: white;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+    }
+
+    .mobile-link {
+        font-size: 2rem;
+    }
+
+    .mobile-dropdown-button {
+        display: inline-block;
+        width: 40px;
+    }
+</style>
+
+
+<div x-data="{ open: false }" class="hamburger-menu">
+    <button @click="open = true" class="hamburger-menu">{% render 'icon-bars-3' %}</button>
+
+    <div class="mobile-menu" x-show="open">
+        <div class="mobile-menu-bar">
+            <a href="{{ routes.root_url }}">
+                <img src="{{ section.settings.nav-image | img_url: 'x30' }}"/>
+            </a>
+
+            <div style="display: flex;">
+                {% render 'icon-shopping-cart' %}
+                {% render 'icon-heart' %}
+                {% render 'icon-magnifying-glass' %}
+                <button @click="open = false">{% render 'icon-x-mark' %}</button>
+            </div>
+        </div>
+
+        {% if shop.customer_accounts_enabled %}
+            <div class="mobile-menu-bar" id="customer-account-buttons">
+                {% if customer %}
+                    <a href="{{ routes.account_url }}" class="top-level-link">Account</a>
+                    {{ 'Log Out' | customer_logout_link | replace: '<a', '<a class="top-level-link"' }}
+                {% else %}
+                    {{ 'Register' | customer_register_link | replace: '<a', '<a class="top-level-link"' }}
+                    {{ 'Log In' | customer_login_link | replace: '<a', '<a class="top-level-link"' }}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="mobile-menu-navigation">
+            {% for link in section.settings.menu.links %}
+                <!-- If link has 2 levels of children -->
+                {% if link.levels == 2 %}
+                    <div x-data="{ open: false }">
+                        <a class="mobile-link" href="{{ link.url }}">{{ link.title }}</a>
+                        <button @click="open = !open" class="mobile-dropdown-button">{% render 'icon-chevron-down' %}</button>
+                        <ul x-show="open">
+                            {% for child in link.links %}
+                                {% if child.levels == 1 %}
+                                    {% render 'mobile-menu-dropdown', parent_url: child.url, parent_title: child.title, sublinks: child.links %}
+                                {% else %}
+                                    <a class="mobile-link" href="{{ child.url }}">{{ child.title }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                <!-- If link has 1 level of children -->
+                {% elsif link.levels == 1 %}
+                    {% render 'mobile-menu-dropdown', parent_url: link.url, parent_title: link.title, sublinks: link.links %}
+
+                <!-- If link has no children -->
+                {% else %} 
+                    <a class="mobile-link" href="{{ link.url }}">{{ link.title }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
